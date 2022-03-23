@@ -134,7 +134,7 @@ struct t_options {
     argparse::ArgValue<int> place_constraint_expand;
     argparse::ArgValue<bool> place_constraint_subtile;
     // NoC-driven placement
-    argparse::ArgValue<bool> include_noc;
+    argparse::ArgValue<bool> noc;
     argparse::ArgValue<std::string> noc_router_tile_name;
 
     /* Timing-driven placement options only */
