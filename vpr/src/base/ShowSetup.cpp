@@ -18,6 +18,7 @@ static void ShowPlacerOpts(const t_placer_opts& PlacerOpts,
                            const t_annealing_sched& AnnealSched);
 static void ShowRouterOpts(const t_router_opts& RouterOpts);
 static void ShowAnalysisOpts(const t_analysis_opts& AnalysisOpts);
+static void ShowNocOpts(const t_noc_opts& NocOpts);
 
 static void ShowAnnealSched(const t_annealing_sched& AnnealSched);
 
@@ -58,6 +59,9 @@ void ShowSetup(const t_vpr_setup& vpr_setup) {
     }
     if (vpr_setup.AnalysisOpts.doAnalysis) {
         ShowAnalysisOpts(vpr_setup.AnalysisOpts);
+    }
+    if (vpr_setup.NocOpts.noc) {
+        ShowNocOpts(vpr_setup.NocOpts);
     }
 }
 
@@ -651,4 +655,12 @@ static void ShowPackerOpts(const t_packer_opts& PackerOpts) {
     VTR_LOG("PackerOpts.target_external_pin_util: %s", vtr::join(PackerOpts.target_external_pin_util, " ").c_str());
     VTR_LOG("\n");
     VTR_LOG("\n");
+}
+
+static void ShowNocOpts(const t_noc_opts& NocOpts)
+{   
+    // show options such as routing algorithm used
+    // name of the flows file
+    // etc...
+    return;
 }
