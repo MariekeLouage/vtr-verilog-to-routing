@@ -3389,12 +3389,12 @@ static void compute_and_mark_lookahead_pins_used(const AtomBlockId blk_id) {
 
     const t_pb* cur_pb = atom_ctx.lookup.atom_pb(blk_id);
     VTR_ASSERT(cur_pb != nullptr);
-
     /* Walk through inputs, outputs, and clocks marking pins off of the same class */
     for (auto pin_id : atom_ctx.nlist.block_pins(blk_id)) {
         auto net_id = atom_ctx.nlist.pin_net(pin_id);
 
         const t_pb_graph_pin* pb_graph_pin = find_pb_graph_pin(atom_ctx.nlist, atom_ctx.lookup, pin_id);
+
         compute_and_mark_lookahead_pins_used_for_pin(pb_graph_pin, cur_pb, net_id);
     }
 }
@@ -3589,6 +3589,8 @@ static bool check_lookahead_pins_used(t_pb* cur_pb, t_ext_pin_util max_external_
         for (int i = 0; i < cur_pb->pb_graph_node->num_input_pin_class; i++) {
             size_t class_size = cur_pb->pb_graph_node->input_pin_class_size[i];
 
+
+
             if (cur_pb->is_root()) {
                 // Scale the class size by the maximum external pin utilization factor
                 // Use ceil to avoid classes of size 1 from being scaled to zero
@@ -3603,6 +3605,12 @@ static bool check_lookahead_pins_used(t_pb* cur_pb, t_ext_pin_util max_external_
             }
 
             if (cur_pb->pb_stats->lookahead_input_pins_used[i].size() > class_size) {
+//                int size = cur_pb->pb_stats->lookahead_input_pins_used[i].size();
+//                VTR_LOG("Lookahead input pins too big. Found %d input pins while class size is %d\n", size, class_size);
+//                auto& atom_ctx = g_vpr_ctx.atom();
+//                for(auto net_id : cur_pb->pb_stats->lookahead_input_pins_used[i]) {
+//                    VTR_LOG("%s\n", atom_ctx.nlist.net_name(net_id).c_str());
+//                }
                 return false;
             }
         }
@@ -3623,6 +3631,12 @@ static bool check_lookahead_pins_used(t_pb* cur_pb, t_ext_pin_util max_external_
             }
 
             if (cur_pb->pb_stats->lookahead_output_pins_used[i].size() > class_size) {
+//                int size = cur_pb->pb_stats->lookahead_output_pins_used[i].size();
+//                VTR_LOG("Lookahead output pins too big. Found %d input pins while class size is %d\n", size, class_size);
+//                auto& atom_ctx = g_vpr_ctx.atom();
+//                for(auto net_id : cur_pb->pb_stats->lookahead_output_pins_used[i]) {
+//                    VTR_LOG("%s\n", atom_ctx.nlist.net_name(net_id).c_str());
+//                }
                 return false;
             }
         }

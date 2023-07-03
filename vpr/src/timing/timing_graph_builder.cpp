@@ -703,7 +703,6 @@ void TimingGraphBuilder::fix_comb_loops() {
 
             tg_->disable_edge(edge_to_break);
         }
-
         sccs = tatum::identify_combinational_loops(*tg_);
     }
 }

@@ -10,6 +10,7 @@
 #include "vtr_util.h"
 #include "vtr_path.h"
 #include "vtr_time.h"
+#include "netlist.h"
 
 static void process_circuit(AtomNetlist& netlist,
                             e_const_gen_inference const_gen_inference_method,
@@ -87,6 +88,40 @@ AtomNetlist read_and_process_circuit(e_circuit_format circuit_format, t_vpr_setu
     }
 
     show_circuit_stats(netlist);
+    VTR_LOG("NETS and pins \n");
+    //Iterate over all the nets
+    for(const vtr::StrongId<atom_net_id_tag, int, -1> net_id : netlist.nets()) {
+        //Do something with each net
+        netlist.net_pins(net_id);
+        VTR_LOG("net %s\n", netlist.net_name(net_id).c_str());
+        VTR_LOG("source \n");
+
+        const vtr::StrongId<atom_pin_id_tag, int, -1> pin_id = netlist.net_driver(net_id);
+        const vtr::StrongId<atom_block_id_tag, int, -1> block_id = netlist.pin_block(pin_id);
+        const t_model* model = netlist.block_model(block_id);
+        bool combinational = netlist.block_is_combinational(block_id);
+        netlist.net_driver(net_id);
+        //            AtomBlockType block_type = netlist.block_type(block_id); enum ipad outpad lut
+        VTR_LOG("block: %s, model: %s, is_combinational: %s ,pin: %s \n", netlist.block_name(block_id).c_str(),
+                model->name,
+                combinational? "true":"false",
+                netlist.pin_name(pin_id).c_str());
+
+
+        VTR_LOG("sinks \n");
+        for(const vtr::StrongId<atom_pin_id_tag, int, -1> pin_id: netlist.net_sinks(net_id)){
+            const vtr::StrongId<atom_block_id_tag, int, -1> block_id = netlist.pin_block(pin_id);
+            const t_model* model = netlist.block_model(block_id);
+            combinational = netlist.block_is_combinational(block_id);
+
+            //            AtomBlockType block_type = netlist.block_type(block_id); enum ipad outpad lut
+            VTR_LOG("block: %s, model: %s, is_combinational: %s ,pin: %s \n", netlist.block_name(block_id).c_str(),
+                    model->name,
+                    combinational? "true":"false",
+                    netlist.pin_name(pin_id).c_str());
+        }
+    }
+
 
     return netlist;
 }
@@ -214,4 +249,5 @@ static void show_circuit_stats(const AtomNetlist& netlist) {
     if (netlist.blocks().empty()) {
         VTR_LOG_WARN("Netlist contains no blocks\n");
     }
+
 }
